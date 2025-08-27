@@ -1,4 +1,4 @@
-🏡 RealtyVest – Estate Investment Platform 🌟 Overview
+RealtyVest – Estate Investment Platform Overview
 
 
 
@@ -6,15 +6,15 @@ RealtyVest is a modern real estate investment platform that empowers users to ex
 
 
 
-✨ Features 🔍 Property Listings – Browse available real estate investment opportunities. 💰 Investment Management – Invest in properties with flexible contribution options. 📊 Portfolio Dashboard – Track investment performance and ROI. 🏦 Secure Transactions – Safe and reliable payment processing. 🌍 Multi-language Support (i18n) – Accessible to users across different regions. 📱 Responsive Design – Optimized for mobile, tablet, and desktop.
+Features Property Listings – Browse available real estate investment opportunities. Investment Management – Invest in properties with flexible contribution options. Portfolio Dashboard – Track investment performance and ROI. Secure Transactions – Safe and reliable payment processing. Multi-language Support (i18n) – Accessible to users across different regions. Responsive Design – Optimized for mobile, tablet, and desktop.
 
 
 
-🛠️ Tech Stack Frontend: React, Vite, TailwindCSS State Management: Zustand / Redux (choose one) Backend (optional): Node.js, Express, MongoDB/PostgreSQL Authentication: JWT / OAuth Deployment: Vercel, Netlify, or Docker + Cloud provider
+Tech Stack Frontend: React, Vite, TailwindCSS State Management: Zustand / Redux (choose one) Backend (optional): Node.js, Express, MongoDB/PostgreSQL Authentication: JWT / OAuth Deployment: Vercel, Netlify, or Docker + Cloud provider
 
 
 
-🚀 Getting Started Prerequisites Node.js (>= 18.x) npm or yarn
+Getting Started Prerequisites Node.js (>= 18.x) npm or yarn
 
 
 
@@ -56,7 +56,7 @@ npm run build
 
 
 
-📂 Project Structure
+Project Structure
 
 
 
@@ -64,15 +64,15 @@ realtyvest-investment-platform/ ├── src/ │ ├── assets/ # Images, l
 
 
 
-🧑‍🤝‍🧑 Contributing
+Contributing
 
 
 
-We welcome contributions! Please fork the repo, create a branch, and submit a pull request. 📜 License
+We welcome contributions! Please fork the repo, create a branch, and submit a pull request. License
 
 
 
-This project is licensed under the MIT License – see the LICENSE file for details. 🌟 Acknowledgements
+This project is licensed under the MIT License – see the LICENSE file for details. Acknowledgements
 
 
 
