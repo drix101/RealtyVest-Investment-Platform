@@ -1,25 +1,34 @@
 import React from 'react'
-import './App.css'
-import Header from './components/Header'
-import Hero from './components/Hero'
-import InvestmentMetrics from './components/InvestmentMetrices'
-import FeaturedProperties from './components/FeaturedProperties'
-import HowItWorks from './components/HowItWorks'
-import Testimonials from './components/Testimonials'
-import Footer from './components/Footer'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Header } from './components/Header'
+import { Footer } from './components/Footer'
+import { HomePage } from './pages/HomePage'
+import { PropertiesPage } from './pages/PropertiesPage'
+import { HowItWorksPage } from './pages/HowItWorksPage'
+import { ResourcesPage } from './pages/ResourcesPage'
+import { AboutUsPage } from './pages/AboutUsPage'
+import { AuthPage } from './pages/AuthPage'
 
-function App() {
+
+export function App() {
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      <main>
-        <Hero />
-        <InvestmentMetrics />
-        <FeaturedProperties />
-        <HowItWorks />
-        <Testimonials />
-      </main>
-      <Footer />
+    <div className="w-full min-h-screen bg-white">
+      <BrowserRouter>
+        <Header />
+        <main>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/properties" element={<PropertiesPage />} />
+            <Route path="/how-it-works" element={<HowItWorksPage />} />
+            <Route path="/resources" element={<ResourcesPage />} />
+            <Route path="/about" element={<AboutUsPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            {/* Optionally, redirect unknown routes to home */}
+            <Route path="*" element={<Navigate to="/Home" replace />} />
+          </Routes>
+        </main>
+        <Footer />
+      </BrowserRouter>
     </div>
   )
 }
