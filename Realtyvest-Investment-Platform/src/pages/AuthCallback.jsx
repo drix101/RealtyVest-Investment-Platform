@@ -51,8 +51,17 @@ export const AuthCallback = () => {
           localStorage.setItem('user', JSON.stringify(tokenResponse.user));
           localStorage.setItem('accessToken', tokenResponse.accessToken);
           
-          // Redirect to dashboard or home page
-          setTimeout(() => navigate('/'), 2000);
+          // Check if user needs verification
+          const needsVerification = !tokenResponse.user.verified || !localStorage.getItem('verificationStatus');
+          
+          // Redirect to verification page if needed, otherwise to home
+          setTimeout(() => {
+            if (needsVerification) {
+              navigate('/verification');
+            } else {
+              navigate('/');
+            }
+          }, 2000);
         } else {
           setStatus('error');
           setMessage(tokenResponse.error || 'Authentication failed.');
