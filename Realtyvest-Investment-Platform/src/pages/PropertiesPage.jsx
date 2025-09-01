@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { SearchIcon, SlidersIcon, GridIcon, ListIcon, MapPinIcon, XIcon } from 'lucide-react';
 import { PropertyCard } from '../components/PropertyCard';
 import { usePropertiesStore } from '../store/usePropertiesStore';
+import { usePropertyStore } from '../store/usePropertyStore';
 
 export const PropertiesPage = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   
   const {
@@ -21,6 +23,8 @@ export const PropertiesPage = () => {
     totalPages,
   } = usePropertiesStore();
 
+  const { getAllProperties, getPropertiesByType, searchProperties } = usePropertyStore();
+
   // Initialize search term from URL parameters
   useEffect(() => {
     const searchParam = searchParams.get('search');
@@ -29,145 +33,20 @@ export const PropertiesPage = () => {
     }
   }, [searchParams]);
 
-  const properties = [{
-    image: 'images/apartment-1.png',
-    title: 'Oakwood Residences',
-    location: 'Austin, TX',
-    price: '$250,000',
-    roi: '8.2%',
-    occupancy: '97%',
-    investors: 42,
-    isPopular: true,
-    type: 'residential'
-  },
-  {
-    image: 'images/apartment-2.png',
-    title: 'Horizon Towers',
-    location: 'Miami, FL',
-    price: '$420,000',
-    roi: '7.5%',
-    occupancy: '95%',
-    investors: 31,
-    type: 'land' 
-  },
-  {
-    image: 'images/apartment-3.png',
-    title: 'Pine Valley Estate',
-    location: 'Austin, TX',
-    price: '$375,000',
-    roi: '9.1%',
-    occupancy: '98%',
-    investors: 31,
-    type: 'residential'
-  },
-  {
-    image: 'images/apartment-4.png',
-    title: 'Lakeside Apartment',
-    location: 'Chicago, IL',
-    price: '$310,000',
-    roi: '8.7%',
-    occupancy: '96%',
-    investors: 38,
-    type: 'residential'
-  },
-  {
-    image: 'images/apartment-5.png',
-    title: 'Sunset Plaza',
-    location: 'Phoenix, AZ',
-    price: '$290,000',
-    roi: '8.3%',
-    occupancy: '94%',
-    investors: 23,
-    isPopular: true,
-    type: 'commercial'
-  },
-  {
-    image: 'images/apartment-6.png',
-    title: 'Maple Groves',
-    location: 'Nashville, TN',
-    price: '$340,000',
-    roi: '7.8%',
-    occupancy: '97%',
-    investors: 17,
-    type: 'residential'
-  },
-  {
-    image: 'images/apartment-7.png',
-    title: 'Downtown Office...',
-    location: 'Seattle, WA',
-    price: '$1,250,000',
-    roi: '6.8%',
-    occupancy: '92%',
-    investors: 63,
-    type: 'commercial'
-  },
-  {
-    image: 'images/apartment-8.png',
-    title: 'Riverside Warehouse',
-    location: 'Portland, OR',
-    price: '$875,000',
-    roi: '7.2%',
-    occupancy: '100%',
-    investors: 45,
-    type: 'industrial'
-  },
-  {
-    image: 'images/apartment-9.png',
-    title: 'Parkside Apartments',
-    location: 'Austin, TX',
-    price: '$450,000',
-    roi: '10.5%',
-    occupancy: 'N/A',
-    investors: 17,
-    type: 'land'
-  },
 
-  {
-    image: 'images/apartment-010.png',
-    title: 'Sunset Estates',
-    location: 'Phoenix, AZ',
-    price: '$290,000',
-    roi: '8.3%',
-    occupancy: '94%',
-    investors: 23,
-    isPopular: true,
-    type: 'residential'
-  },
-  {
-    image: 'images/apartment-011.png',
-    title: 'Mountain View Apartments',
-    location: 'Denver, CO',
-    price: '$360,000',
-    roi: '9.2%',
-    occupancy: '95%',
-    investors: 28,
-    type: 'residential'
-  },
-  {
-    image: 'images/apartment-012.png',
-    title: 'Cityscape Apartments',
-    location: 'New York, NY',
-    price: '$480,000',
-    roi: '8.9%',
-    occupancy: '96%',
-    investors: 35,
-    type: 'residential'
+
+  // Get properties from store and apply filters
+  let filteredProperties = getAllProperties();
+  
+  // Filter by property type
+  if (activeFilter !== 'all') {
+    filteredProperties = getPropertiesByType(activeFilter);
   }
-
-];
-
-  // Enhanced filtering logic to include location search
-  const filteredProperties = properties.filter(property => {
-    // Filter by property type
-    const typeMatch = activeFilter === 'all' || property.type === activeFilter;
-    
-    // Filter by search term (location)
-    const searchMatch = !searchTerm || 
-      property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.title.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return typeMatch && searchMatch;
-  });
+  
+  // Filter by search term
+  if (searchTerm) {
+    filteredProperties = searchProperties(searchTerm);
+  }
 
   // Pagination logic
   const startIdx = (currentPage - 1) * propertiesPerPage;
@@ -424,11 +303,25 @@ export const PropertiesPage = () => {
               </div>}
             {/* Property Grid/List - Mobile Optimized */}
             {viewMode === 'grid' ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {paginatedProperties.map((property, index) => <PropertyCard key={index} {...property} />)}
+                {paginatedProperties.map((property, index) => (
+                  <PropertyCard 
+                    key={property.id} 
+                    id={property.id}
+                    image={property.images?.main || property.images?.interior?.[0]}
+                    title={property.title}
+                    location={property.location}
+                    price={`$${property.price.toLocaleString()}`}
+                    roi={`${property.roi}%`}
+                    occupancy={`${property.occupancy}%`}
+                    investors={property.investors}
+                    isPopular={property.isPopular}
+                  />
+                ))}
               </div> : <div className="space-y-4">
-                {paginatedProperties.map((property, index) => <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:shadow-lg flex flex-col md:flex-row">
+                {paginatedProperties.map((property, index) => (
+                  <div key={property.id} className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:shadow-lg flex flex-col md:flex-row">
                     <div className="md:w-1/3 h-48 md:h-auto">
-                      <img src={property.image} alt={property.title} className="w-full h-full object-cover" />
+                      <img src={property.images?.main || property.images?.interior?.[0]} alt={property.title} className="w-full h-full object-cover" />
                     </div>
                     <div className="p-4 md:p-5 md:w-2/3 flex flex-col">
                       <div className="flex justify-between items-start mb-3 md:mb-4">
@@ -444,20 +337,20 @@ export const PropertiesPage = () => {
                           </div>
                         </div>
                         <div className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-sm font-medium whitespace-nowrap">
-                          {property.price}
+                          ${property.price.toLocaleString()}
                         </div>
                       </div>
                       <div className="grid grid-cols-3 gap-3 mb-4">
                         <div>
                           <div className="text-gray-500 text-sm">ROI</div>
                           <div className="font-bold text-blue-700">
-                            {property.roi}
+                            {property.roi}%
                           </div>
                         </div>
                         <div>
                           <div className="text-gray-500 text-sm">Occupancy</div>
                           <div className="font-bold text-blue-700">
-                            {property.occupancy}
+                            {property.occupancy}%
                           </div>
                         </div>
                         <div>
@@ -468,12 +361,16 @@ export const PropertiesPage = () => {
                         </div>
                       </div>
                       <div className="mt-auto">
-                        <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition font-medium">
+                        <button 
+                          onClick={() => navigate(`/property/${property.id}`)}
+                          className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition font-medium"
+                        >
                           View Property
                         </button>
                       </div>
                     </div>
-                  </div>)}
+                  </div>
+                ))}
               </div>}
             {/* Pagination - Mobile Optimized */}
             <div className="mt-6 sm:mt-8 flex justify-center">

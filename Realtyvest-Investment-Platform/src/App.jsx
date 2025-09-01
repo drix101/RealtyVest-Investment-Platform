@@ -8,6 +8,8 @@ import { HowItWorksPage } from './pages/HowItWorksPage'
 import { ResourcesPage } from './pages/ResourcesPage'
 import { AboutUsPage } from './pages/AboutUsPage'
 import { AuthPage } from './pages/AuthPage'
+import { VerificationPage } from './pages/VerificationPage'
+import { PropertyDetailPage } from './pages/PropertyDetailPage'
 
 
 export function App() {
@@ -23,6 +25,8 @@ export function App() {
             <Route path="/resources" element={<ResourcesPage />} />
             <Route path="/about" element={<AboutUsPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/verification" element={<VerificationPage />} />
+            <Route path="/PropertyDetailPage/:propertyId" element={<PropertyDetailPage />} />
             {/* Optionally, redirect unknown routes to home */}
             <Route path="*" element={<Navigate to="/Home" replace />} />
           </Routes>

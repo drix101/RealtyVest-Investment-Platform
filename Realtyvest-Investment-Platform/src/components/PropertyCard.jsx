@@ -1,5 +1,6 @@
 import React from 'react';
 import { MapPinIcon, BarChart3Icon, TrendingUpIcon, UsersIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 export const PropertyCard = ({
   image,
   title,
@@ -8,8 +9,14 @@ export const PropertyCard = ({
   roi,
   occupancy,
   investors,
-  isPopular = false
+  isPopular = false,
+  id
 }) => {
+  const navigate = useNavigate();
+
+  const handleViewProperty = () => {
+    navigate(`/property/${id || title.toLowerCase().replace(/\s+/g, '-')}`);
+  };
   return <div className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">
       <div className="relative">
         <img src={image} alt={title} className="w-full h-48 sm:h-56 object-cover" />
@@ -55,7 +62,10 @@ export const PropertyCard = ({
             <span className="font-bold text-blue-700">{investors}</span>
           </div>
         </div>
-        <button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition font-medium">
+        <button 
+          onClick={handleViewProperty}
+          className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition font-medium"
+        >
           View Property
         </button>
       </div>
