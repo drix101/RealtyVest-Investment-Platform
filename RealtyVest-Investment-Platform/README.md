@@ -1,4 +1,4 @@
-RealtyVest – Estate Investment Platform Overview
+RealtyVest – Estate Investment Platform
 
 
 
