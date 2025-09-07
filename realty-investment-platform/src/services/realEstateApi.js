@@ -37,7 +37,7 @@ class RealEstateApiService {
   
     try {
       const data = await this.makeRequest(
-        `http://localhost:3001/api/rentspree/properties?${queryParams}`
+        `/api/rentspree/properties?${queryParams.toString()}`
       );
       return this.transformRentSpreeData(data);
     } catch (error) {
