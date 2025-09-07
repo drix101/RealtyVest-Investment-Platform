@@ -1,6 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { MapPinIcon, BarChart3Icon, TrendingUpIcon, UsersIcon } from 'lucide-react';
+
 export const PropertyCard = ({
+  id,
   image,
   title,
   location,
@@ -10,12 +13,15 @@ export const PropertyCard = ({
   investors,
   isPopular = false
 }) => {
-  return <div className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">
+  return (
+    <div className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">
       <div className="relative">
         <img src={image} alt={title} className="w-full h-48 sm:h-56 object-cover" />
-        {isPopular && <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+        {isPopular && (
+          <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
             Popular
-          </div>}
+          </div>
+        )}
       </div>
       <div className="p-4 sm:p-5 flex flex-col flex-grow">
         <div className="flex justify-between items-start">
@@ -55,9 +61,12 @@ export const PropertyCard = ({
             <span className="font-bold text-blue-700">{investors}</span>
           </div>
         </div>
-        <button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition font-medium">
-          View Property
-        </button>
+        <Link to={`/properties/${id}`} className="w-full mt-4">
+          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition font-medium">
+            View Property
+          </button>
+        </Link>
       </div>
-    </div>;
+    </div>
+  );
 };

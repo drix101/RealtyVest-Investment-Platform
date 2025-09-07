@@ -26,20 +26,18 @@ class RealEstateApiService {
   }
 
   // RentSpree API Integration
+  // Update the getRentSpreeProperties method to use the local API server
   async getRentSpreeProperties(filters = {}) {
     if (!this.apiKeys.rentSpree) {
       console.warn('RentSpree API key not configured');
       return this.getMockProperties();
     }
-
-    const queryParams = new URLSearchParams({
-      api_key: this.apiKeys.rentSpree,
-      ...filters
-    });
-
+  
+    const queryParams = new URLSearchParams(filters);
+  
     try {
       const data = await this.makeRequest(
-        `https://api.rentspree.com/v1/properties?${queryParams}`
+        `http://localhost:3001/api/rentspree/properties?${queryParams}`
       );
       return this.transformRentSpreeData(data);
     } catch (error) {
@@ -47,7 +45,8 @@ class RealEstateApiService {
       return this.getMockProperties();
     }
   }
-
+  
+  // Similarly update other API methods to use the local server
   // Zillow API Integration
   async getZillowPropertyData(address) {
     if (!this.apiKeys.zillow) {

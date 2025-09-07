@@ -2,7 +2,7 @@
 class ApiService {
   constructor() {
     this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-    this.apiKeys = {
+    this.apiKeys = { 
       alphaVantage: import.meta.env.VITE_ALPHA_VANTAGE_API_KEY,
       googleMaps: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
       mapbox: import.meta.env.VITE_MAPBOX_API_KEY,
