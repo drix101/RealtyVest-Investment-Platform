@@ -47,17 +47,15 @@ class RealEstateApiService {
   }
   
   // Similarly update other API methods to use the local server
-  // Zillow API Integration
-  async getZillowPropertyData(address) {
+  // Zillow API Integration - Updated to use serverless function
+  async getZillowPropertyData(zpid) {
     if (!this.apiKeys.zillow) {
       console.warn('Zillow API key not configured');
       return this.getMockZillowData();
     }
-
+  
     try {
-      const data = await this.makeRequest(
-        `https://api.zillow.com/v1/GetSearchResults.htm?zws-id=${this.apiKeys.zillow}&address=${encodeURIComponent(address)}`
-      );
+      const data = await this.makeRequest(`/api/zillow/property/${zpid}`);
       return this.transformZillowData(data);
     } catch (error) {
       console.error('Zillow API error:', error);
@@ -65,17 +63,16 @@ class RealEstateApiService {
     }
   }
 
-  // Walk Score API Integration
+  // Walk Score API Integration - Updated to use serverless function
   async getWalkScore(lat, lon, address) {
     if (!this.apiKeys.walkScore) {
       console.warn('Walk Score API key not configured');
       return this.getMockWalkScore();
     }
-
+  
     try {
-      const data = await this.makeRequest(
-        `https://api.walkscore.com/score?format=json&address=${encodeURIComponent(address)}&lat=${lat}&lon=${lon}&wsapikey=${this.apiKeys.walkScore}`
-      );
+      const queryParams = new URLSearchParams({ address, lat, lon });
+      const data = await this.makeRequest(`/api/walkscore?${queryParams.toString()}`);
       return this.transformWalkScoreData(data);
     } catch (error) {
       console.error('Walk Score API error:', error);
@@ -83,17 +80,16 @@ class RealEstateApiService {
     }
   }
 
-  // Google Maps Geocoding
+  // Google Maps Geocoding - Updated to use serverless function
   async geocodeAddress(address) {
     if (!this.apiKeys.googleMaps) {
       console.warn('Google Maps API key not configured');
       return this.getMockGeocodeData();
     }
-
+  
     try {
-      const data = await this.makeRequest(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${this.apiKeys.googleMaps}`
-      );
+      const queryParams = new URLSearchParams({ address });
+      const data = await this.makeRequest(`/api/geocode?${queryParams.toString()}`);
       return this.transformGeocodeData(data);
     } catch (error) {
       console.error('Google Maps Geocoding error:', error);
@@ -101,17 +97,20 @@ class RealEstateApiService {
     }
   }
 
-  // Google Places API for nearby amenities
+  // Google Places API for nearby amenities - Updated to use serverless function
   async getNearbyAmenities(lat, lon, type = 'restaurant') {
     if (!this.apiKeys.googleMaps) {
       console.warn('Google Maps API key not configured');
       return this.getMockAmenitiesData();
     }
-
+  
     try {
-      const data = await this.makeRequest(
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1000&type=${type}&key=${this.apiKeys.googleMaps}`
-      );
+      const queryParams = new URLSearchParams({ 
+        location: `${lat},${lon}`, 
+        radius: '1000', 
+        type 
+      });
+      const data = await this.makeRequest(`/api/places/nearby?${queryParams.toString()}`);
       return this.transformPlacesData(data);
     } catch (error) {
       console.error('Google Places API error:', error);
