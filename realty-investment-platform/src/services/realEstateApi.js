@@ -1,123 +1,46 @@
-// Real Estate API Service - External real estate data integration
+// Real Estate API Service - Frontend Only (Mock Data)
 class RealEstateApiService {
   constructor() {
-    this.apiKeys = {
-      rentSpree: import.meta.env.VITE_RENTSPREE_API_KEY,
-      zillow: import.meta.env.VITE_ZILLOW_API_KEY,
-      walkScore: import.meta.env.VITE_WALKSCORE_API_KEY,
-      googleMaps: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-    };
+    // No API keys needed for mock data
   }
 
-  // Generic request method with error handling
+  // Generic request method (simplified for mock data)
   async makeRequest(url, options = {}) {
-    try {
-      const response = await fetch(url, options);
-       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Real Estate API request failed:', error);
-      throw error;
-    }
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return Promise.resolve({});
   }
 
-  // RentSpree API Integration
-  // Update the getRentSpreeProperties method to use the local API server
+  // RentSpree API Integration - Mock Data Only
   async getRentSpreeProperties(filters = {}) {
-    if (!this.apiKeys.rentSpree) {
-      console.warn('RentSpree API key not configured');
-      return this.getMockProperties();
-    }
-  
-    const queryParams = new URLSearchParams(filters);
-  
-    try {
-      const data = await this.makeRequest(
-        `/api/rentspree/properties?${queryParams.toString()}`
-      );
-      return this.transformRentSpreeData(data);
-    } catch (error) {
-      console.error('RentSpree API error:', error);
-      return this.getMockProperties();
-    }
+    console.log('Using mock properties data');
+    return this.getMockProperties();
   }
   
-  // Similarly update other API methods to use the local server
-  // Zillow API Integration - Updated to use serverless function
-  async getZillowPropertyData(zpid) {
-    if (!this.apiKeys.zillow) {
-      console.warn('Zillow API key not configured');
-      return this.getMockZillowData();
-    }
-  
-    try {
-      const data = await this.makeRequest(`/api/zillow/property/${zpid}`);
-      return this.transformZillowData(data);
-    } catch (error) {
-      console.error('Zillow API error:', error);
-      return this.getMockZillowData();
-    }
+  // Zillow API Integration - Mock Data Only
+  async getZillowPropertyData(address) {
+    console.log('Using mock Zillow data');
+    return this.getMockZillowData();
   }
 
-  // Walk Score API Integration - Updated to use serverless function
+  // Walk Score API Integration - Mock Data Only
   async getWalkScore(lat, lon, address) {
-    if (!this.apiKeys.walkScore) {
-      console.warn('Walk Score API key not configured');
-      return this.getMockWalkScore();
-    }
-  
-    try {
-      const queryParams = new URLSearchParams({ address, lat, lon });
-      const data = await this.makeRequest(`/api/walkscore?${queryParams.toString()}`);
-      return this.transformWalkScoreData(data);
-    } catch (error) {
-      console.error('Walk Score API error:', error);
-      return this.getMockWalkScore();
-    }
+    console.log('Using mock Walk Score data');
+    return this.getMockWalkScore();
   }
 
-  // Google Maps Geocoding - Updated to use serverless function
+  // Google Maps Geocoding - Mock Data Only
   async geocodeAddress(address) {
-    if (!this.apiKeys.googleMaps) {
-      console.warn('Google Maps API key not configured');
-      return this.getMockGeocodeData();
-    }
-  
-    try {
-      const queryParams = new URLSearchParams({ address });
-      const data = await this.makeRequest(`/api/geocode?${queryParams.toString()}`);
-      return this.transformGeocodeData(data);
-    } catch (error) {
-      console.error('Google Maps Geocoding error:', error);
-      return this.getMockGeocodeData();
-    }
+    console.log('Using mock geocoding data');
+    return this.getMockGeocodeData();
   }
 
-  // Google Places API for nearby amenities - Updated to use serverless function
+  // Google Places API for nearby amenities - Mock Data Only
   async getNearbyAmenities(lat, lon, type = 'restaurant') {
-    if (!this.apiKeys.googleMaps) {
-      console.warn('Google Maps API key not configured');
-      return this.getMockAmenitiesData();
-    }
-  
-    try {
-      const queryParams = new URLSearchParams({ 
-        location: `${lat},${lon}`, 
-        radius: '1000', 
-        type 
-      });
-      const data = await this.makeRequest(`/api/places/nearby?${queryParams.toString()}`);
-      return this.transformPlacesData(data);
-    } catch (error) {
-      console.error('Google Places API error:', error);
-      return this.getMockAmenitiesData();
-    }
+    console.log('Using mock amenities data');
+    return this.getMockAmenitiesData();
   }
-
+  
   // Data transformation methods
   transformRentSpreeData(data) {
     return data.properties?.map(property => ({
