@@ -150,7 +150,7 @@ export const HowItWorksPage = () => {
         </div>
       </section>
       {/* FAQ Section */}
-      <section className="py-16">
+      <section className="py-16" id="faq">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">

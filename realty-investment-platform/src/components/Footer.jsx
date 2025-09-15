@@ -8,7 +8,7 @@ export const Footer = () => {
           <div>
             <h3 className="text-2xl font-bold text-blue-400 mb-4 md:mb-6">
               RealtyVest
-            </h3>
+            </h3> 
             <p className="text-gray-400 mb-6">
               The smarter way to invest in real estate. Start building your
               portfolio with high-yield properties.
@@ -34,7 +34,7 @@ export const Footer = () => {
               <li>
                 <Link to="/properties" className="text-gray-400 hover:text-white transition block py-1">
                   Properties
-                </Link>
+                </Link> 
               </li>
               <li>
                 <Link to="/how-it-works" className="text-gray-400 hover:text-white transition block py-1">
@@ -47,12 +47,12 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition block py-1">
+                <Link to="/how-it-works#faq" className="text-gray-400 hover:text-white transition block py-1">
                   FAQ
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition block py-1">
+                <a href="/contact" className="text-gray-400 hover:text-white transition block py-1">
                   Contact
                 </a>
               </li>

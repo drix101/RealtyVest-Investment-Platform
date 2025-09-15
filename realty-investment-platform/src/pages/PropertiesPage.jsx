@@ -236,9 +236,8 @@ export const PropertiesPage = () => {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
             Investment Properties
           </h1>
-          <p className="text-blue-100 max-w-2xl mb-6 sm:mb-8 text-sm sm:text-base">
-            Browse our curated selection of high-performing investment
-            properties across multiple markets and asset classes.
+          <p className="text-blue-100 max-w-l mb-6 sm:mb-8 text-sm sm:text-base">
+            Browse our curated selection of high-performing investment properties across multiple markets and asset classes.
           </p>
           {/* Search Bar - Mobile Optimized */}
           <div className="bg-white p-3 rounded-lg shadow-lg flex flex-col gap-3">
