@@ -9,7 +9,7 @@ class DataService {
     }
 
     try {
-      const response = await fetch('/Data/data.json');
+      const response = await fetch('/public/Data/data.json');
       if (!response.ok) {
         throw new Error('Failed to load data');
       }
