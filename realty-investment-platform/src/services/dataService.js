@@ -9,7 +9,8 @@ class DataService {
     }
 
     try {
-      const response = await fetch('/public/Data/data.json');
+      // Fixed path - files in public directory are served from root
+      const response = await fetch('/Data/data.json');
       if (!response.ok) {
         throw new Error('Failed to load data');
       }
