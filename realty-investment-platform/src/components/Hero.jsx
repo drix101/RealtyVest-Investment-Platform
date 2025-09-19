@@ -11,7 +11,7 @@ export const Hero = () => {
     if (searchTerm.trim()) {
       navigate(`/properties?search=${encodeURIComponent(searchTerm.trim())}`);
     } else {
-      navigate('/properties');
+      navigate('/properties'); 
     }
   };
 

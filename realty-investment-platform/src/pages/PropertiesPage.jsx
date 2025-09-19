@@ -3,16 +3,18 @@ import { useSearchParams } from 'react-router-dom';
 import { SearchIcon, SlidersIcon, GridIcon, ListIcon, MapPinIcon, XIcon, LoaderIcon } from 'lucide-react';
 import { PropertyCard } from '../components/PropertyCard';
 import { usePropertiesStore } from '../store/usePropertiesStore';
-import realEstateApi from '../services/realEstateApi';
-import financialApi from '../services/financialApi';
+import dataService from '../services/dataService';
 
 export const PropertiesPage = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
   const [marketData, setMarketData] = useState(null);
+  
+  // Remove the 'new' keyword since dataService is already an instance
+  // const dataService = new DataService(); // Remove this line
   
   const {
     viewMode,
@@ -42,16 +44,16 @@ export const PropertiesPage = () => {
       setError(null);
       
       try {
-        // Load properties from API
-        const propertiesData = await realEstateApi.getRentSpreeProperties({
+        // Load properties from data.json using DataService
+        const propertiesData = await dataService.getProperties({
           type: activeFilter === 'all' ? undefined : activeFilter,
           search: searchTerm
         });
         setProperties(propertiesData);
 
-        // Load market data
-        const marketDataResult = await financialApi.getMarketOverview();
-        setMarketData(marketDataResult);
+        // Load investment metrics as market data
+        const investmentMetrics = await dataService.getInvestmentMetrics();
+        setMarketData(investmentMetrics);
       } catch (err) {
         console.error('Failed to load data:', err);
         setError('Failed to load properties. Please try again.');
@@ -66,11 +68,11 @@ export const PropertiesPage = () => {
     loadData();
   }, [activeFilter, searchTerm]);
 
-  // Mock data fallback function
+  // Mock data fallback function (keeping as backup)
   const getMockProperties = () => [
     {
       id: 1,
-      image: 'images/apartment-1.png',
+      image: '/images/apartment-1.png',
       title: 'Oakwood Residences',
       location: 'Austin, TX',
       price: '$250,000',
@@ -208,7 +210,7 @@ export const PropertiesPage = () => {
   // Enhanced filtering logic to include location search
   const filteredProperties = properties.filter(property => {
     // Filter by property type
-    const typeMatch = activeFilter === 'all' || property.type === activeFilter;
+    const typeMatch = activeFilter === 'all' || property.propertyType === activeFilter;
     
     // Filter by search term (location)
     const searchMatch = !searchTerm || 
@@ -218,15 +220,23 @@ export const PropertiesPage = () => {
     return typeMatch && searchMatch;
   });
 
+  // Calculate dynamic total pages based on filtered properties
+  const calculatedTotalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
+
   // Pagination logic
   const startIdx = (currentPage - 1) * propertiesPerPage;
   const endIdx = startIdx + propertiesPerPage;
   const paginatedProperties = filteredProperties.slice(startIdx, endIdx);
 
   const handlePageChange = (page) => {
-    if (page < 1 || page > totalPages) return;
+    if (page < 1 || page > calculatedTotalPages) return;
     setCurrentPage(page);
   };
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFilter, searchTerm, setCurrentPage]);
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -267,7 +277,6 @@ export const PropertiesPage = () => {
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           {/* Filters - Desktop (Hidden on Mobile) */}
           <div className="hidden lg:block w-64 bg-white shadow-md rounded-lg p-6 h-fit">
-            {/* ... existing desktop filter content ... */}
             <h2 className="text-lg font-bold text-gray-800 mb-4">Filters</h2>
             <div className="mb-6">
               <h3 className="text-sm font-semibold text-gray-600 mb-2">
@@ -336,7 +345,6 @@ export const PropertiesPage = () => {
                 <option>Boston, MA</option>
                 <option>Washington, DC</option>
                 <option>Philadelphia, PA</option>
-
               </select>
             </div>
             <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition font-medium">
@@ -454,7 +462,6 @@ export const PropertiesPage = () => {
                        <option>Boston, MA</option>
                        <option>Washington, DC</option>
                        <option>Philadelphia, PA</option>
-
                       </select> 
                     </div>
                     <div className="sticky bottom-0 pt-4 pb-4 bg-white">
@@ -496,128 +503,179 @@ export const PropertiesPage = () => {
             )}
 
             {/* Market Data Display */}
-            {marketData && !loading && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <h3 className="text-sm font-medium text-blue-800 mb-2">Market Overview</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            {marketData && (
+              <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+                <h3 className="text-lg font-bold text-gray-800 mb-3">Market Overview</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                   <div>
-                    <span className="text-blue-600 font-medium">S&P 500:</span>
-                    <span className="ml-1 text-blue-800">${marketData.price?.toLocaleString()}</span>
+                    <span className="text-sm text-gray-600">Avg. ROI</span>
+                    <span className="ml-1 text-blue-800">{marketData.averageROI}</span>
                   </div>
                   <div>
-                    <span className="text-blue-600 font-medium">Change:</span>
-                    <span className={`ml-1 ${marketData.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {marketData.change >= 0 ? '+' : ''}{marketData.change?.toFixed(2)}
-                    </span>
+                    <span className="text-sm text-gray-600">Total Properties</span>
+                    <span className="ml-1 text-blue-800">{marketData.totalProperties}</span>
                   </div>
                   <div>
-                    <span className="text-blue-600 font-medium">Volume:</span>
-                    <span className="ml-1 text-blue-800">{(marketData.volume / 1000000).toFixed(1)}M</span>
+                    <span className="text-sm text-gray-600">Total Investors</span>
+                    <span className="ml-1 text-blue-800">{marketData.totalInvestors}</span>
                   </div>
                   <div>
-                    <span className="text-blue-600 font-medium">High:</span>
-                    <span className="ml-1 text-blue-800">${marketData.high?.toLocaleString()}</span>
+                    <span className="text-sm text-gray-600">Avg. Occupancy</span>
+                    <span className="ml-1 text-blue-800">{marketData.averageOccupancy}</span>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Property Grid/List - Mobile Optimized */}
-            {!loading && !error && (viewMode === 'grid' ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {paginatedProperties.map((property, index) => (
-                  <PropertyCard key={property.id || index} {...property} />
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {paginatedProperties.map((property, index) => (
-                  <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:shadow-lg flex flex-col md:flex-row">
-                    <div className="md:w-1/3 h-48 md:h-auto">
-                      <img src={property.image} alt={property.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="p-4 md:p-5 md:w-2/3 flex flex-col">
-                      <div className="flex justify-between items-start mb-3 md:mb-4">
+            {!loading && !error && (
+              <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6' : 'space-y-4'}`}>
+                {viewMode === 'grid' ? (
+                  paginatedProperties.map((property, index) => (
+                    <PropertyCard 
+                      key={property.id || index} 
+                      id={property.id}
+                      image={property.images?.[0] || property.image}
+                      title={property.title}
+                      location={property.location}
+                      price={property.priceFormatted || property.price}
+                      roi={property.roi}
+                      occupancy={property.occupancyRate || property.occupancy}
+                      investors={property.investors}
+                      isPopular={property.isPopular}
+                      propertyType={property.propertyType || property.type}
+                    />
+                  ))
+                ) : (
+                  paginatedProperties.map((property, index) => (
+                    <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:shadow-lg flex flex-col md:flex-row">
+                      <div className="md:w-1/3 h-48 md:h-auto">
+                        <img src={property.images?.[0] || property.image} alt={property.title} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="p-6 md:w-2/3 flex flex-col justify-between">
                         <div>
-                          <h3 className="text-lg font-bold text-gray-800 line-clamp-2">
+                          <h3 className="text-xl font-bold text-gray-800 mb-2">
                             {property.title}
                           </h3>
-                          <div className="flex items-center text-gray-600 mt-1">
+                          <div className="flex items-center text-gray-600 mb-4">
                             <MapPinIcon size={16} className="mr-1 flex-shrink-0" />
-                            <span className="text-sm truncate">
+                            <span className="text-sm">
                               {property.location}
                             </span>
                           </div>
                         </div>
-                        <div className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-sm font-medium whitespace-nowrap">
-                          {property.price}
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-3 gap-3 mb-4">
-                        <div>
-                          <div className="text-gray-500 text-sm">ROI</div>
-                          <div className="font-bold text-blue-700">
-                            {property.roi}
+                        <div className="flex justify-between items-center">
+                          <div className="text-2xl font-bold text-blue-600">
+                            {property.priceFormatted || property.price}
+                          </div>
+                          <div className="flex space-x-4 text-sm">
+                            <div>
+                              <span className="text-gray-500">ROI:</span>
+                              <span className="font-medium text-green-600 ml-1">
+                                {property.roi}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-gray-500">Occupancy:</span>
+                              <span className="font-medium ml-1">
+                                {property.occupancyRate || property.occupancy}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-gray-500">Investors:</span>
+                              <span className="font-medium ml-1">
+                                {property.investors}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                        <div>
-                          <div className="text-gray-500 text-sm">Occupancy</div>
-                          <div className="font-bold text-blue-700">
-                            {property.occupancy}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-gray-500 text-sm">Investors</div>
-                          <div className="font-bold text-blue-700">
-                            {property.investors}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mt-auto">
-                        <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition font-medium">
-                          View Property
-                        </button>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
-            ))}
+            )}
+
             {/* Pagination - Mobile Optimized */}
-            <div className="mt-6 sm:mt-8 flex justify-center">
-              <nav className="flex items-center space-x-1 sm:space-x-2">
+            {!loading && !error && filteredProperties.length > propertiesPerPage && (
+              <div className="flex justify-center items-center mt-8 space-x-2">
                 <button
-                  className="px-2 sm:px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                  className={`px-2 sm:px-3 py-1 rounded border ${currentPage === 1 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                 >
                   Previous
                 </button>
-                {[1, 2, 3].map(page => (
-                  <button
-                    key={page}
-                    className={`px-2 sm:px-3 py-1 rounded border ${currentPage === page ? 'bg-blue-600 text-white' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
-                    onClick={() => handlePageChange(page)}
-                  >
-                    {page}
-                  </button>
-                ))}
-                <span className="px-1 sm:px-2 text-gray-500">...</span>
+                
+                {/* Show page numbers with smart pagination */}
+                {(() => {
+                  const pages = [];
+                  const maxVisiblePages = 5;
+                  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                  let endPage = Math.min(calculatedTotalPages, startPage + maxVisiblePages - 1);
+                  
+                  // Adjust start page if we're near the end
+                  if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                  }
+                  
+                  // Add first page and ellipsis if needed
+                  if (startPage > 1) {
+                    pages.push(
+                      <button
+                        key={1}
+                        className={`px-2 sm:px-3 py-1 rounded border ${currentPage === 1 ? 'bg-blue-600 text-white' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+                        onClick={() => handlePageChange(1)}
+                      >
+                        1
+                      </button>
+                    );
+                    if (startPage > 2) {
+                      pages.push(<span key="ellipsis1" className="px-2 text-gray-500">...</span>);
+                    }
+                  }
+                  
+                  // Add visible page numbers
+                  for (let i = startPage; i <= endPage; i++) {
+                    pages.push(
+                      <button
+                        key={i}
+                        className={`px-2 sm:px-3 py-1 rounded border ${currentPage === i ? 'bg-blue-600 text-white' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+                        onClick={() => handlePageChange(i)}
+                      >
+                        {i}
+                      </button>
+                    );
+                  }
+                  
+                  // Add ellipsis and last page if needed
+                  if (endPage < calculatedTotalPages) {
+                    if (endPage < calculatedTotalPages - 1) {
+                      pages.push(<span key="ellipsis2" className="px-2 text-gray-500">...</span>);
+                    }
+                    pages.push(
+                      <button
+                        key={calculatedTotalPages}
+                        className={`px-2 sm:px-3 py-1 rounded border ${currentPage === calculatedTotalPages ? 'bg-blue-600 text-white' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+                        onClick={() => handlePageChange(calculatedTotalPages)}
+                      >
+                        {calculatedTotalPages}
+                      </button>
+                    );
+                  }
+                  
+                  return pages;
+                })()}
+                
                 <button
-                  className={`px-2 sm:px-3 py-1 rounded border ${currentPage === totalPages ? 'bg-blue-600 text-white' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
-                  onClick={() => handlePageChange(totalPages)}
-                >
-                  {totalPages}
-                </button>
-                <button
-                  className="px-2 sm:px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                  className={`px-2 sm:px-3 py-1 rounded border ${currentPage === calculatedTotalPages ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
+                  disabled={currentPage === calculatedTotalPages}
                 >
                   Next
                 </button>
-              </nav>
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

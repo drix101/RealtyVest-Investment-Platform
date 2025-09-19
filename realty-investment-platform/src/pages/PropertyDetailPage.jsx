@@ -1,32 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { MapPinIcon, BarChart3Icon, TrendingUpIcon, UsersIcon, BedIcon, BathIcon, SquareIcon, CalendarIcon, CheckIcon } from 'lucide-react';
-import RealEstateApiService from '../services/realEstateApi';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { 
+  MapPinIcon, 
+  BarChart3Icon, 
+  TrendingUpIcon, 
+  UsersIcon, 
+  BedIcon, 
+  BathIcon, 
+  SquareIcon, 
+  CalendarIcon, 
+  CheckIcon,
+  ArrowLeftIcon,
+  ShareIcon,
+  HeartIcon,
+  DollarSignIcon,
+  PieChartIcon,
+  BuildingIcon,
+  StarIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
+} from 'lucide-react';
 
 export const PropertyDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeImage, setActiveImage] = useState(0);
   const [investmentAmount, setInvestmentAmount] = useState('');
-  
-  // Mock additional images for the gallery
-  const additionalImages = [
-    { id: 1, src: '/images/apartment-1.png', alt: 'Living Room' },
-    { id: 2, src: '/images/apartment-2.png', alt: 'Kitchen' },
-    { id: 3, src: '/images/apartment-3.png', alt: 'Bedroom' },
-    { id: 4, src: '/images/apartment-4.png', alt: 'Bathroom' },
-    { id: 5, src: '/images/apartment-5.png', alt: 'Exterior' },
-  ];
+  const [isFavorited, setIsFavorited] = useState(false);
 
   useEffect(() => {
     const fetchPropertyDetails = async () => {
       try {
         setLoading(true);
-        const realEstateApi = new RealEstateApiService();
-        const properties = realEstateApi.getMockProperties();
-        const foundProperty = properties.find(p => p.id === parseInt(id));
+        
+        // Load data from our JSON file
+        const response = await fetch('/Data/data.json');
+        const data = await response.json();
+        const foundProperty = data.properties.find(p => p.id === parseInt(id));
         
         if (!foundProperty) {
           throw new Error('Property not found');
@@ -35,6 +48,7 @@ export const PropertyDetailPage = () => {
         setProperty(foundProperty);
         setLoading(false);
       } catch (err) {
+        console.error('Error fetching property:', err);
         setError(err.message);
         setLoading(false);
       }
@@ -49,253 +63,377 @@ export const PropertyDetailPage = () => {
 
   const handleInvestmentSubmit = (e) => {
     e.preventDefault();
-    // In a real app, this would connect to a payment processor
-    alert(`Investment of $${investmentAmount} submitted for ${property.title}. In a real app, this would connect to a payment processor.`);
+    if (investmentAmount && parseInt(investmentAmount) >= property.investmentDetails.minimumInvestment) {
+      // Handle investment submission
+      console.log('Investment submitted:', investmentAmount);
+      alert(`Investment of $${parseInt(investmentAmount).toLocaleString()} submitted successfully!`);
+    }
   };
 
-  if (loading) return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-      </div>
-    </div>
-  );
+  const nextImage = () => {
+    setActiveImage((prev) => (prev + 1) % property.images.length);
+  };
 
-  if (error) return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-        <p>Error: {error}</p>
-        <Link to="/properties" className="text-blue-600 hover:underline mt-2 inline-block">
-          Return to properties
+  const prevImage = () => {
+    setActiveImage((prev) => (prev - 1 + property.images.length) % property.images.length);
+  };
+
+  const calculateMonthlyReturn = () => {
+    if (!investmentAmount || !property) return 0;
+    return Math.round(parseInt(investmentAmount) * property.investmentDetails.expectedAnnualReturn / 100 / 12);
+  };
+
+  const calculateAnnualReturn = () => {
+    if (!investmentAmount || !property) return 0;
+    return Math.round(parseInt(investmentAmount) * property.investmentDetails.expectedAnnualReturn / 100);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error || !property) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Property Not Found</h1>
+        <p className="text-gray-600 mb-8">{error || 'The property you are looking for does not exist.'}</p>
+        <Link to="/properties" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition">
+          Back to Properties
         </Link>
       </div>
-    </div>
-  );
-
-  if (!property) return null;
+    );
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Breadcrumb Navigation */}
-      <div className="mb-6">
-        <nav className="flex text-sm">
-          <Link to="/" className="text-gray-500 hover:text-blue-600">Home</Link>
-          <span className="mx-2 text-gray-500">/</span>
-          <Link to="/properties" className="text-gray-500 hover:text-blue-600">Properties</Link>
-          <span className="mx-2 text-gray-500">/</span>
-          <span className="text-blue-600">{property.title}</span>
-        </nav>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Navigation */}
+      <div className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => navigate('/properties')}
+              className="flex items-center text-gray-600 hover:text-blue-600 transition"
+            >
+              <ArrowLeftIcon size={20} className="mr-2" />
+              Back to Properties
+            </button>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setIsFavorited(!isFavorited)}
+                className={`p-2 rounded-full transition ${
+                  isFavorited ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <HeartIcon size={20} fill={isFavorited ? 'currentColor' : 'none'} />
+              </button>
+              <button className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+                <ShareIcon size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column - Property Images and Details */}
-        <div className="lg:col-span-2">
-          {/* Main Image Gallery */}
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-            <div className="relative h-96">
-              <img 
-                src={activeImage === 0 ? property.image : additionalImages[activeImage-1].src} 
-                alt={property.title} 
-                className="w-full h-full object-cover"
-              />
-              {property.isPopular && (
-                <div className="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                  Popular
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Property Details */}
+          <div className="lg:col-span-2">
+            {/* Image Gallery */}
+            <div className="relative mb-8">
+              <div className="relative h-96 md:h-[500px] rounded-xl overflow-hidden">
+                <img
+                  src={property.images[activeImage]}
+                  alt={property.title}
+                  className="w-full h-full object-cover"
+                />
+                {property.isPopular && (
+                  <div className="absolute top-4 right-4 bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full">
+                    Popular
+                  </div>
+                )}
+                
+                {/* Navigation Arrows */}
+                {property.images.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full transition"
+                    >
+                      <ChevronLeftIcon size={20} />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full transition"
+                    >
+                      <ChevronRightIcon size={20} />
+                    </button>
+                  </>
+                )}
+              </div>
+              
+              {/* Image Thumbnails */}
+              {property.images.length > 1 && (
+                <div className="flex space-x-2 mt-4 overflow-x-auto">
+                  {property.images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setActiveImage(index)}
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition ${
+                        activeImage === index ? 'border-blue-600' : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <img src={image} alt={`View ${index + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
-            
-            {/* Thumbnail Gallery */}
-            <div className="p-4 border-t border-gray-100">
-              <div className="flex space-x-2 overflow-x-auto pb-2">
-                <button 
-                  onClick={() => setActiveImage(0)}
-                  className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${activeImage === 0 ? 'border-blue-600' : 'border-transparent'}`}
-                >
-                  <img src={property.image} alt="Main" className="w-full h-full object-cover" />
-                </button>
-                {additionalImages.map((img, index) => (
-                  <button 
-                    key={img.id}
-                    onClick={() => setActiveImage(index+1)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${activeImage === index+1 ? 'border-blue-600' : 'border-transparent'}`}
-                  >
-                    <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
-                  </button>
+
+            {/* Property Header */}
+            <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-800 mb-2">{property.title}</h1>
+                  <div className="flex items-center text-gray-600 mb-4">
+                    <MapPinIcon size={20} className="mr-2" />
+                    <span className="text-lg">{property.location}</span>
+                  </div>
+                  <p className="text-gray-600">{property.address}</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-blue-600 mb-1">{property.priceFormatted}</div>
+                  <div className="text-sm text-gray-500">Investment Price</div>
+                </div>
+              </div>
+
+              {/* Key Metrics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <TrendingUpIcon size={24} className="text-blue-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-blue-600">{property.roi}</div>
+                  <div className="text-sm text-gray-600">Expected ROI</div>
+                </div>
+                <div className="bg-green-50 p-4 rounded-lg text-center">
+                  <BarChart3Icon size={24} className="text-green-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-green-600">{property.occupancyRate}</div>
+                  <div className="text-sm text-gray-600">Occupancy Rate</div>
+                </div>
+                <div className="bg-purple-50 p-4 rounded-lg text-center">
+                  <UsersIcon size={24} className="text-purple-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-purple-600">{property.investors}</div>
+                  <div className="text-sm text-gray-600">Investors</div>
+                </div>
+                <div className="bg-amber-50 p-4 rounded-lg text-center">
+                  <BuildingIcon size={24} className="text-amber-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-amber-600 capitalize">{property.propertyType}</div>
+                  <div className="text-sm text-gray-600">Property Type</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Property Specifications */}
+            <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Property Details</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {property.bedrooms > 0 && (
+                  <div className="flex items-center">
+                    <BedIcon size={20} className="text-gray-400 mr-3" />
+                    <div>
+                      <div className="font-medium">{property.bedrooms}</div>
+                      <div className="text-sm text-gray-600">Bedrooms</div>
+                    </div>
+                  </div>
+                )}
+                {property.bathrooms > 0 && (
+                  <div className="flex items-center">
+                    <BathIcon size={20} className="text-gray-400 mr-3" />
+                    <div>
+                      <div className="font-medium">{property.bathrooms}</div>
+                      <div className="text-sm text-gray-600">Bathrooms</div>
+                    </div>
+                  </div>
+                )}
+                <div className="flex items-center">
+                  <SquareIcon size={20} className="text-gray-400 mr-3" />
+                  <div>
+                    <div className="font-medium">{property.squareFeet?.toLocaleString()}</div>
+                    <div className="text-sm text-gray-600">Sq Ft</div>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <CalendarIcon size={20} className="text-gray-400 mr-3" />
+                  <div>
+                    <div className="font-medium">{property.yearBuilt}</div>
+                    <div className="text-sm text-gray-600">Year Built</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Financial Performance */}
+            <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Financial Performance</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-medium text-gray-700 mb-3">Revenue Breakdown</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Monthly Rent</span>
+                      <span className="font-medium">${property.financials.monthlyRent.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Annual Revenue</span>
+                      <span className="font-medium">${property.financials.annualRevenue.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Operating Expenses</span>
+                      <span className="font-medium text-red-600">-${property.financials.operatingExpenses.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between border-t pt-2">
+                      <span className="font-medium">Net Operating Income</span>
+                      <span className="font-bold text-green-600">${property.financials.netOperatingIncome.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-700 mb-3">Investment Details</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Min Investment</span>
+                      <span className="font-medium">${property.investmentDetails.minimumInvestment.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Investment Period</span>
+                      <span className="font-medium">{property.investmentDetails.investmentPeriod}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Total Units</span>
+                      <span className="font-medium">{property.investmentDetails.totalUnits}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Available Shares</span>
+                      <span className="font-medium text-blue-600">{property.investmentDetails.availableShares}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">About This Property</h2>
+              <p className="text-gray-600 leading-relaxed">{property.description}</p>
+            </div>
+
+            {/* Amenities */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Amenities & Features</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {property.amenities.map((amenity, index) => (
+                  <div key={index} className="flex items-center">
+                    <CheckIcon size={16} className="text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700">{amenity}</span>
+                  </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Property Details */}
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-800">{property.title}</h1>
-                  <div className="flex items-center text-gray-600 mt-1">
-                    <MapPinIcon size={18} className="mr-1 flex-shrink-0" />
-                    <span>{property.location}</span>
-                  </div>
-                </div>
-                <div className="bg-blue-50 text-blue-700 px-3 py-2 rounded-lg text-lg font-bold">
-                  {property.price}
-                </div>
-              </div>
-
-              {/* Property Specs */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center text-gray-500 mb-1">
-                    <BedIcon size={18} className="mr-1" />
-                    <span>Bedrooms</span>
-                  </div>
-                  <span className="font-bold text-blue-700">{property.bedrooms}</span>
-                </div>
-                <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center text-gray-500 mb-1">
-                    <BathIcon size={18} className="mr-1" />
-                    <span>Bathrooms</span>
-                  </div>
-                  <span className="font-bold text-blue-700">{property.bathrooms}</span>
-                </div>
-                <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center text-gray-500 mb-1">
-                    <SquareIcon size={18} className="mr-1" />
-                    <span>Square Feet</span>
-                  </div>
-                  <span className="font-bold text-blue-700">{property.squareFeet.toLocaleString()}</span>
-                </div>
-                <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center text-gray-500 mb-1">
-                    <CalendarIcon size={18} className="mr-1" />
-                    <span>Year Built</span>
-                  </div>
-                  <span className="font-bold text-blue-700">{property.yearBuilt || 'N/A'}</span>
-                </div>
-              </div>
-
-              {/* Investment Metrics */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="flex flex-col items-center p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center text-gray-700 mb-1">
-                    <TrendingUpIcon size={18} className="mr-1" />
-                    <span>ROI</span>
-                  </div>
-                  <span className="font-bold text-blue-700">{property.roi}</span>
-                </div>
-                <div className="flex flex-col items-center p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center text-gray-700 mb-1">
-                    <BarChart3Icon size={18} className="mr-1" />
-                    <span>Occupancy</span>
-                  </div>
-                  <span className="font-bold text-blue-700">{property.occupancy}</span>
-                </div>
-                <div className="flex flex-col items-center p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center text-gray-700 mb-1">
-                    <UsersIcon size={18} className="mr-1" />
-                    <span>Investors</span>
-                  </div>
-                  <span className="font-bold text-blue-700">{property.investors}</span>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-3">Description</h2>
-                <p className="text-gray-600">{property.description}</p>
-              </div>
-
-              {/* Amenities */}
-              <div>
-                <h2 className="text-xl font-bold text-gray-800 mb-3">Amenities</h2>
-                <div className="grid grid-cols-2 gap-2">
-                  {property.amenities.map((amenity, index) => (
-                    <div key={index} className="flex items-center">
-                      <CheckIcon size={16} className="text-green-500 mr-2" />
-                      <span>{amenity}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column - Investment Form */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl shadow-md overflow-hidden sticky top-6">
-            <div className="p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Invest in this Property</h2>
-              
-              <div className="mb-6">
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>Minimum Investment</span>
-                  <span>$5,000</span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>Expected Annual Return</span>
-                  <span className="font-medium text-green-600">{property.roi}</span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>Property Type</span>
-                  <span className="capitalize">{property.type}</span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Current Investors</span>
-                  <span>{property.investors}</span>
-                </div>
+          {/* Right Column - Investment Form */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden sticky top-6">
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
+                <h2 className="text-xl font-bold mb-2">Invest in this Property</h2>
+                <p className="text-blue-100">Start building your real estate portfolio</p>
               </div>
               
-              <form onSubmit={handleInvestmentSubmit}>
-                <div className="mb-4">
-                  <label htmlFor="investmentAmount" className="block text-sm font-medium text-gray-700 mb-1">
-                    Investment Amount ($)
-                  </label>
-                  <input
-                    type="number"
-                    id="investmentAmount"
-                    min="5000"
-                    step="1000"
-                    value={investmentAmount}
-                    onChange={handleInvestmentChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter amount (min $5,000)"
-                    required
-                  />
-                </div>
-                
+              <div className="p-6">
                 <div className="mb-6">
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <h3 className="font-medium text-gray-800 mb-2">Investment Summary</h3>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Your Investment</span>
-                      <span>${investmentAmount ? parseInt(investmentAmount).toLocaleString() : '0'}</span>
-                    </div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Expected Annual Return</span>
-                      <span>${investmentAmount ? (parseInt(investmentAmount) * parseFloat(property.roi) / 100).toLocaleString() : '0'}</span>
-                    </div>
-                    <div className="flex justify-between text-sm font-medium text-blue-700 mt-2 pt-2 border-t border-blue-100">
-                      <span>Estimated Monthly Income</span>
-                      <span>${investmentAmount ? Math.round(parseInt(investmentAmount) * parseFloat(property.roi) / 100 / 12).toLocaleString() : '0'}</span>
-                    </div>
+                  <div className="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Minimum Investment</span>
+                    <span className="font-medium">${property.investmentDetails.minimumInvestment.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Expected Annual Return</span>
+                    <span className="font-medium text-green-600">{property.investmentDetails.expectedAnnualReturn}%</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Investment Period</span>
+                    <span className="font-medium">{property.investmentDetails.investmentPeriod}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Available Shares</span>
+                    <span className="font-medium text-blue-600">{property.investmentDetails.availableShares} remaining</span>
                   </div>
                 </div>
                 
-                <button
-                  type="submit"
-                  disabled={!investmentAmount || parseInt(investmentAmount) < 5000}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-3 px-4 rounded-lg transition font-medium"
-                >
-                  Invest Now
-                </button>
+                <form onSubmit={handleInvestmentSubmit}>
+                  <div className="mb-4">
+                    <label htmlFor="investmentAmount" className="block text-sm font-medium text-gray-700 mb-2">
+                      Investment Amount ($)
+                    </label>
+                    <input
+                      type="number"
+                      id="investmentAmount"
+                      min={property.investmentDetails.minimumInvestment}
+                      step="1000"
+                      value={investmentAmount}
+                      onChange={handleInvestmentChange}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={`Min $${property.investmentDetails.minimumInvestment.toLocaleString()}`}
+                      required
+                    />
+                  </div>
+                  
+                  {investmentAmount && parseInt(investmentAmount) >= property.investmentDetails.minimumInvestment && (
+                    <div className="mb-6">
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <h3 className="font-medium text-gray-800 mb-3">Investment Summary</h3>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>Your Investment</span>
+                            <span className="font-medium">${parseInt(investmentAmount).toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Expected Annual Return</span>
+                            <span className="font-medium text-green-600">${calculateAnnualReturn().toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between text-sm font-medium text-blue-700 pt-2 border-t border-blue-100">
+                            <span>Est. Monthly Income</span>
+                            <span>${calculateMonthlyReturn().toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <button
+                    type="submit"
+                    disabled={!investmentAmount || parseInt(investmentAmount) < property.investmentDetails.minimumInvestment}
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-3 px-4 rounded-lg transition font-medium mb-4"
+                  >
+                    Invest Now
+                  </button>
+                </form>
                 
-                <p className="text-xs text-gray-500 mt-3 text-center">
+                <div className="text-center">
+                  <Link 
+                    to="/properties" 
+                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                  >
+                    View More Properties
+                  </Link>
+                </div>
+                
+                <p className="text-xs text-gray-500 mt-4 text-center">
                   By investing, you agree to our Terms of Service and Privacy Policy.
                   All investments involve risk and may lose value.
                 </p>
-              </form>
+              </div>
             </div>
           </div>
         </div>

@@ -10,7 +10,7 @@ export const Header = () => {
   return <header className="w-full bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center">
-          <Link to="/">
+          <Link to="/"> 
             <h1 className="text-2xl font-bold text-blue-700">RealtyVest</h1>
           </Link>
         </div>

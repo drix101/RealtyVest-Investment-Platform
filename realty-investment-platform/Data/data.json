@@ -1,0 +1,496 @@
+{
+  "properties": [
+    {
+      "id": 1,
+      "title": "Oakwood Residences",
+      "location": "Austin, TX",
+      "address": "1234 Oak Street, Austin, TX 78701",
+      "price": 250000,
+      "priceFormatted": "$250,000",
+      "roi": "8.2%",
+      "occupancyRate": "97%",
+      "investors": 42,
+      "isPopular": true,
+      "isFeatured": true,
+      "propertyType": "residential",
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "squareFeet": 1200,
+      "yearBuilt": 2018,
+      "description": "Modern residential complex with excellent amenities and high occupancy rates. Located in the heart of Austin's growing tech district.",
+      "images": [
+        "/images/apartment-1.png",
+        "/images/apartment-2.png",
+        "/images/apartment-3.png"
+      ],
+      "amenities": [
+        "Swimming Pool",
+        "Fitness Center",
+        "Parking Garage",
+        "24/7 Security",
+        "Rooftop Terrace"
+      ],
+      "investmentDetails": {
+        "minimumInvestment": 5000,
+        "expectedAnnualReturn": 8.2,
+        "investmentPeriod": "5 years",
+        "totalUnits": 48,
+        "availableShares": 25
+      },
+      "financials": {
+        "monthlyRent": 1800,
+        "annualRevenue": 86400,
+        "operatingExpenses": 25920,
+        "netOperatingIncome": 60480
+      }
+    },
+    {
+      "id": 2,
+      "title": "Horizon Towers",
+      "location": "Miami, FL",
+      "address": "5678 Ocean Drive, Miami, FL 33139",
+      "price": 420000,
+      "priceFormatted": "$420,000",
+      "roi": "7.5%",
+      "occupancyRate": "95%",
+      "investors": 31,
+      "isPopular": false,
+      "isFeatured": true,
+      "propertyType": "residential",
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "squareFeet": 1800,
+      "yearBuilt": 2020,
+      "description": "Luxury high-rise apartments with ocean views and premium finishes. Prime location in Miami's vibrant South Beach area.",
+      "images": [
+        "/images/apartment-2.png",
+        "/images/apartment-4.png",
+        "/images/apartment-5.png"
+      ],
+      "amenities": [
+        "Ocean View",
+        "Concierge Service",
+        "Spa & Wellness Center",
+        "Private Beach Access",
+        "Valet Parking"
+      ],
+      "investmentDetails": {
+        "minimumInvestment": 10000,
+        "expectedAnnualReturn": 7.5,
+        "investmentPeriod": "7 years",
+        "totalUnits": 120,
+        "availableShares": 15
+      },
+      "financials": {
+        "monthlyRent": 3200,
+        "annualRevenue": 153600,
+        "operatingExpenses": 46080,
+        "netOperatingIncome": 107520
+      }
+    },
+    {
+      "id": 3,
+      "title": "Pine Valley Estate",
+      "location": "Denver, CO",
+      "address": "9012 Pine Valley Road, Denver, CO 80202",
+      "price": 375000,
+      "priceFormatted": "$375,000",
+      "roi": "9.1%",
+      "occupancyRate": "98%",
+      "investors": 27,
+      "isPopular": false,
+      "isFeatured": true,
+      "propertyType": "residential",
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "squareFeet": 2200,
+      "yearBuilt": 2019,
+      "description": "Spacious family homes in a prestigious neighborhood with excellent schools and mountain views.",
+      "images": [
+        "/images/apartment-3.png",
+        "/images/apartment-6.png",
+        "/images/apartment-7.png"
+      ],
+      "amenities": [
+        "Mountain Views",
+        "Community Park",
+        "Walking Trails",
+        "Playground",
+        "Clubhouse"
+      ],
+      "investmentDetails": {
+        "minimumInvestment": 7500,
+        "expectedAnnualReturn": 9.1,
+        "investmentPeriod": "6 years",
+        "totalUnits": 32,
+        "availableShares": 18
+      },
+      "financials": {
+        "monthlyRent": 2800,
+        "annualRevenue": 134400,
+        "operatingExpenses": 40320,
+        "netOperatingIncome": 94080
+      }
+    },
+    {
+      "id": 4,
+      "title": "Lakeside Apartments",
+      "location": "Chicago, IL",
+      "address": "3456 Lakeshore Drive, Chicago, IL 60611",
+      "price": 310000,
+      "priceFormatted": "$310,000",
+      "roi": "8.7%",
+      "occupancyRate": "96%",
+      "investors": 38,
+      "isPopular": false,
+      "isFeatured": true,
+      "propertyType": "residential",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "squareFeet": 1100,
+      "yearBuilt": 2017,
+      "description": "Charming lakefront apartments with stunning water views and easy access to downtown Chicago.",
+      "images": [
+        "/images/apartment-4.png",
+        "/images/apartment-8.png",
+        "/images/apartment-9.png"
+      ],
+      "amenities": [
+        "Lake Views",
+        "Marina Access",
+        "Fitness Center",
+        "Business Center",
+        "Pet-Friendly"
+      ],
+      "investmentDetails": {
+        "minimumInvestment": 6000,
+        "expectedAnnualReturn": 8.7,
+        "investmentPeriod": "5 years",
+        "totalUnits": 64,
+        "availableShares": 22
+      },
+      "financials": {
+        "monthlyRent": 2200,
+        "annualRevenue": 105600,
+        "operatingExpenses": 31680,
+        "netOperatingIncome": 73920
+      }
+    },
+    {
+      "id": 5,
+      "title": "Sunset Plaza",
+      "location": "Phoenix, AZ",
+      "address": "7890 Sunset Boulevard, Phoenix, AZ 85001",
+      "price": 290000,
+      "priceFormatted": "$290,000",
+      "roi": "8.3%",
+      "occupancyRate": "94%",
+      "investors": 23,
+      "isPopular": true,
+      "isFeatured": true,
+      "propertyType": "residential",
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "squareFeet": 1500,
+      "yearBuilt": 2021,
+      "description": "Modern desert living with energy-efficient features and resort-style amenities in growing Phoenix market.",
+      "images": [
+        "/images/apartment-5.png",
+        "/images/apartment-1.png",
+        "/images/apartment-3.png"
+      ],
+      "amenities": [
+        "Resort-Style Pool",
+        "Solar Panels",
+        "Desert Landscaping",
+        "BBQ Areas",
+        "Covered Parking"
+      ],
+      "investmentDetails": {
+        "minimumInvestment": 5500,
+        "expectedAnnualReturn": 8.3,
+        "investmentPeriod": "5 years",
+        "totalUnits": 40,
+        "availableShares": 28
+      },
+      "financials": {
+        "monthlyRent": 1900,
+        "annualRevenue": 91200,
+        "operatingExpenses": 27360,
+        "netOperatingIncome": 63840
+      }
+    },
+    {
+      "id": 6,
+      "title": "Maple Grove Condos",
+      "location": "Nashville, TN",
+      "address": "2468 Maple Grove Lane, Nashville, TN 37201",
+      "price": 340000,
+      "priceFormatted": "$340,000",
+      "roi": "7.8%",
+      "occupancyRate": "97%",
+      "investors": 19,
+      "isPopular": false,
+      "isFeatured": true,
+      "propertyType": "residential",
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "squareFeet": 1300,
+      "yearBuilt": 2020,
+      "description": "Stylish condominiums in Nashville's music district with modern finishes and urban convenience.",
+      "images": [
+        "/images/apartment-6.png",
+        "/images/apartment-2.png",
+        "/images/apartment-4.png"
+      ],
+      "amenities": [
+        "Music Room",
+        "Rooftop Deck",
+        "Urban Garden",
+        "Bike Storage",
+        "Smart Home Features"
+      ],
+      "investmentDetails": {
+        "minimumInvestment": 8000,
+        "expectedAnnualReturn": 7.8,
+        "investmentPeriod": "6 years",
+        "totalUnits": 28,
+        "availableShares": 12
+      },
+      "financials": {
+        "monthlyRent": 2400,
+        "annualRevenue": 115200,
+        "operatingExpenses": 34560,
+        "netOperatingIncome": 80640
+      }
+    },
+    {
+      "id": 7,
+      "title": "Riverside Commons",
+      "location": "Portland, OR",
+      "address": "1357 Riverside Avenue, Portland, OR 97201",
+      "price": 385000,
+      "priceFormatted": "$385,000",
+      "roi": "8.9%",
+      "occupancyRate": "99%",
+      "investors": 45,
+      "isPopular": true,
+      "isFeatured": false,
+      "propertyType": "residential",
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "squareFeet": 1600,
+      "yearBuilt": 2019,
+      "description": "Eco-friendly apartments along the Willamette River with sustainable features and excellent transit access.",
+      "images": [
+        "/images/apartment-7.png",
+        "/images/apartment-5.png",
+        "/images/apartment-8.png"
+      ],
+      "amenities": [
+        "River Views",
+        "Green Building Certified",
+        "Electric Car Charging",
+        "Bike Share Program",
+        "Community Garden"
+      ],
+      "investmentDetails": {
+        "minimumInvestment": 9000,
+        "expectedAnnualReturn": 8.9,
+        "investmentPeriod": "7 years",
+        "totalUnits": 56,
+        "availableShares": 8
+      },
+      "financials": {
+        "monthlyRent": 2600,
+        "annualRevenue": 124800,
+        "operatingExpenses": 37440,
+        "netOperatingIncome": 87360
+      }
+    },
+    {
+      "id": 8,
+      "title": "Gateway Business Center",
+      "location": "Atlanta, GA",
+      "address": "4680 Gateway Drive, Atlanta, GA 30309",
+      "price": 750000,
+      "priceFormatted": "$750,000",
+      "roi": "9.5%",
+      "occupancyRate": "92%",
+      "investors": 62,
+      "isPopular": false,
+      "isFeatured": false,
+      "propertyType": "commercial",
+      "bedrooms": 0,
+      "bathrooms": 0,
+      "squareFeet": 15000,
+      "yearBuilt": 2016,
+      "description": "Class A office building in Atlanta's thriving business district with long-term corporate tenants.",
+      "images": [
+        "/images/apartment-8.png",
+        "/images/apartment-9.png",
+        "/images/apartment-1.png"
+      ],
+      "amenities": [
+        "Conference Facilities",
+        "High-Speed Internet",
+        "Executive Parking",
+        "24/7 Security",
+        "HVAC System"
+      ],
+      "investmentDetails": {
+        "minimumInvestment": 25000,
+        "expectedAnnualReturn": 9.5,
+        "investmentPeriod": "10 years",
+        "totalUnits": 1,
+        "availableShares": 5
+      },
+      "financials": {
+        "monthlyRent": 12000,
+        "annualRevenue": 432000,
+        "operatingExpenses": 129600,
+        "netOperatingIncome": 302400
+      }
+    },
+    {
+        "id": 9,
+        "title": "Sunset Heights Apartments",
+        "location": "Los Angeles, CA",
+        "address": "789 Sunset Boulevard, Los Angeles, CA 90024",
+        "price": 420000,
+        "priceFormatted": "$420,000",
+        "roi": "9.2%",
+        "occupancyRate": "95%",
+        "investors": 28,
+        "isPopular": true,
+        "isFeatured": false,
+        "propertyType": "residential",
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "squareFeet": 1400,
+        "yearBuilt": 2021,
+        "description": "Spacious apartments in Los Angeles' sunset district with modern finishes and city views.",
+        "images": [
+          "/images/apartment-9.png",
+          "/images/apartment-6.png",
+          "/images/apartment-7.png"
+        ],
+        "amenities": [
+          "City Views",
+          "Private Pool",
+          "Gymnasium",
+          "Community Pool"
+        ],
+        "investmentDetails": {
+          "minimumInvestment": 10000,
+          "expectedAnnualReturn": 9.2,
+          "investmentPeriod": "8 years",
+          "totalUnits": 24,
+          "availableShares": 6
+        },
+        "financials": {
+          "monthlyRent": 2800,
+          "annualRevenue": 134400,
+          "operatingExpenses": 41440,
+          "netOperatingIncome": 92960
+        }
+    },
+    {
+        "id": 10,
+        "title": "Sunset Heights Apartments",
+        "location": "Los Angeles, CA",
+        "address": "789 Sunset Boulevard, Los Angeles, CA 90024",
+        "price": 420000,
+        "priceFormatted": "$420,000",
+        "roi": "9.2%",
+        "occupancyRate": "95%",
+        "investors": 28,
+        "isPopular": true,
+        "isFeatured": false,
+        "propertyType": "residential",
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "squareFeet": 1400,
+        "yearBuilt": 2021,
+        "description": "Spacious apartments in Los Angeles' sunset district with modern finishes and city views.",
+        "images": [
+          "/images/apartment-9.png",
+          "/images/apartment-6.png",
+          "/images/apartment-7.png"
+        ],
+        "amenities": [
+          "City Views",
+          "Private Pool",
+          "Gymnasium",
+          "Community Pool"
+        ],
+        "investmentDetails": {
+          "minimumInvestment": 10000,
+          "expectedAnnualReturn": 9.2,
+          "investmentPeriod": "8 years",
+          "totalUnits": 24,
+          "availableShares": 6
+        },
+        "financials": {
+          "monthlyRent": 2800,
+          "annualRevenue": 134400,
+          "operatingExpenses": 41440,
+          "netOperatingIncome": 92960
+        }
+    }
+  ],
+  "investmentMetrics": {
+    "averageAnnualReturn": "8.7%",
+    "totalAssetsUnderManagement": "$32.4M",
+    "averageOccupancyRate": "96%",
+    "activeInvestors": "3,200+"
+  },
+  "propertyTypes": [
+    {
+      "id": "residential",
+      "name": "Residential",
+      "description": "Apartment complexes, condominiums, and single-family homes"
+    },
+    {
+      "id": "commercial",
+      "name": "Commercial",
+      "description": "Office buildings, retail spaces, and mixed-use developments"
+    },
+    {
+      "id": "industrial",
+      "name": "Industrial",
+      "description": "Warehouses, manufacturing facilities, and distribution centers"
+    },
+    {
+      "id": "land",
+      "name": "Land",
+      "description": "Undeveloped land and development opportunities"
+    }
+  ],
+  "priceRanges": [
+    {
+      "id": "100k-250k",
+      "name": "$100k - $250k",
+      "min": 100000,
+      "max": 250000
+    },
+    {
+      "id": "250k-500k",
+      "name": "$250k - $500k",
+      "min": 250000,
+      "max": 500000
+    },
+    {
+      "id": "500k-1m",
+      "name": "$500k - $1M",
+      "min": 500000,
+      "max": 1000000
+    },
+    {
+      "id": "1m+",
+      "name": "$1M+",
+      "min": 1000000,
+      "max": null
+    }
+  ]
+}

@@ -11,7 +11,7 @@ export const PropertyCard = ({
   roi,
   occupancy,
   investors,
-  isPopular = false
+  isPopular = false 
 }) => {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">

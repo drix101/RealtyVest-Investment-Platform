@@ -1,39 +1,19 @@
 import { defineConfig } from 'vite'
-import { visualizer } from 'rollup-plugin-visualizer'
 import react from '@vitejs/plugin-react'
 
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(),
-    visualizer({
-      open: true,
-      filename: 'stats.html',
-    }),
-  ],
+  plugins: [react()],
+  base: '/', // Ensure base path is correct
   build: {
+    outDir: 'dist', // Vercel expects this
+    assetsDir: 'assets',
+    sourcemap: false, // Disable for production
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          // Vendor chunks
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor'
-            }
-            if (id.includes('react-router')) {
-              return 'router-vendor'
-            }
-            if (id.includes('lucide-react')) {
-              return 'icons-vendor'
-            }
-            return 'vendor'
-          }
-          
-          // Feature-based chunks
-          if (id.includes('/pages/Auth') || id.includes('/contexts/Auth') || id.includes('supabaseAuth')) {
-            return 'auth-chunk'
-          }
-          if (id.includes('/pages/Properties') || id.includes('realEstateApi')) {
-            return 'properties-chunk'
-          }
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'router-vendor': ['react-router-dom']
         }
       }
     }

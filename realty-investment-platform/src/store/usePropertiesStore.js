@@ -5,8 +5,8 @@ export const usePropertiesStore = create((set) => ({
   activeFilter: 'all',
   showFilters: true,
   currentPage: 1,
-  propertiesPerPage: 12,  // Changed from 6 to 12 to show all properties
-  totalPages: 8,          // Changed from 8 to 1 since all properties fit on one page
+  propertiesPerPage: 6,   // Updated to show 8 properties per page
+  totalPages: 12,          // This will be calculated dynamically in the component
   setViewMode: (mode) => set({ viewMode: mode }),
   setActiveFilter: (filter) => set({ activeFilter: filter }),
   setShowFilters: (show) => set({ showFilters: show }),

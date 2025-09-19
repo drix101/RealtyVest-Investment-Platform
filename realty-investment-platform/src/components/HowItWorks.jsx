@@ -9,7 +9,7 @@ export const HowItWorks = () => {
     icon: <BarChartIcon size={32} className="text-blue-600" />,
     title: 'Analyze Performance',
     description: 'Review historical performance data, projected returns, and comprehensive property reports.'
-  }, {
+  }, { 
     icon: <HomeIcon size={32} className="text-blue-600" />,
     title: 'Invest Securely',
     description: 'Choose your investment amount and complete your transaction through our secure platform.'
